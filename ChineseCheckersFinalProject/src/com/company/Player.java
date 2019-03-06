@@ -51,7 +51,12 @@ public class Player {
     }
 
     public void CreatePieces(){
-
+        //creates 10 pieces
+        Piece [] newpieces = new Piece[10];
+        for (int i = 0; i < 10; i++){
+            newpieces[i] = new Piece(color);
+        }
+        pieces = newpieces;
     }
 
     public int getNum() {
@@ -76,5 +81,19 @@ public class Player {
 
     public void setNum(int num) {
         this.num = num;
+    }
+
+    public Piece[] getPieces() {
+        return pieces;
+    }
+
+    public void setPieces(Piece[] pieces) {
+        this.pieces = pieces;
+    }
+
+    public void setPieces(Piece p, int i){
+        if (i >= 0 && i < 10){
+            pieces[i] = p;
+        }
     }
 }

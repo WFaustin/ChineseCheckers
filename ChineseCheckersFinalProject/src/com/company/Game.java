@@ -14,6 +14,11 @@ public class Game {
     *
      */
 
+    private Board board = new Board();
+    private Player [] players = null;
+
+
+
     public Game(){
 
     }

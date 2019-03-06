@@ -9,7 +9,7 @@ import java.awt.event.ItemListener;
 
 public class PlaySetupMenu extends Menu{
 
-    private static int playsetupMenunum = 1;
+    private static int playsetupMenunum = 2;
     private static String playsetupMenuname = "RulesMenu";
     public static JFrame playsetupMenuJFrame = null;
     private JComboBox nop = null;
@@ -32,16 +32,16 @@ public class PlaySetupMenu extends Menu{
     public class PlaySetupMenuButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("Ok")){
-                int s = (int) nop.getSelectedItem();
-                if (teamisfalse == true){
-                    //Individual Game
-                }
-                else{
-                    //Team Game
-                }
+            if (e.getActionCommand().equals("OK")){
+                //int s = (int) nop.getSelectedItem();
+                Player[] players = new Player[2];
+                players[0] = new Player("red");
+                players[1] = new Player("blue");
+                getMenuNavigator().MakeMenu(3, playsetupMenuJFrame, players);
                 playsetupMenuJFrame.remove(playsetuppanel);
-                getMenuNavigator().MakeMenu(3, playsetupMenuJFrame);
+                //replace 2 with s
+
+
 
 
             }
@@ -82,6 +82,7 @@ public class PlaySetupMenu extends Menu{
         numofPlayers.addItem(3);
         nop = numofPlayers;
         JButton submit = new JButton("OK");
+        submit.addActionListener(new PlaySetupMenuButtonListener());
         jPanel.add(team);
         jPanel.add(indi);
         jPanel.add(submit);

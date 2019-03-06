@@ -31,13 +31,13 @@ public class MenuNavigator {
             currentmenu = new PlayMenu(jFrame);
         }
         else if (num == 4){
-            currentmenu = new SettingsMenu(jFrame);
+           currentmenu = new SettingsMenu(jFrame);
         }
     }
 
     public void MakeMenu(int num, JFrame jFrame, Player[] players){
-        if (num == 4){
-            currentmenu = new PlayMenu(jFrame, players);
+        if (num == 3){
+           currentmenu = new PlayMenu(jFrame, players);
         }
     }
 }
