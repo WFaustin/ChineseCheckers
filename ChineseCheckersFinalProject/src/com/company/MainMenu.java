@@ -24,6 +24,9 @@ public class MainMenu extends Menu {
                 mainMenuJFrame.remove((mainMenuJPanel));
                 getMenuNavigator().MakeMenu(2, mainMenuJFrame);
             }
+            if(e.getActionCommand().equals(("Quit"))){
+                System.exit(0);
+            }
         }
     }
 
@@ -56,10 +59,8 @@ public class MainMenu extends Menu {
         JButton rulesButton = new JButton("Rules");
         rulesButton.addActionListener(new MainMenuButtonListener());
         JButton quitButton = new JButton("Quit");
+        quitButton.addActionListener(new MainMenuButtonListener());
 
-        Piece c = new Piece(COLORS.Red);
-
-        jPanel.add(c.getPieceLabel());
         jPanel.add(playButton);
         jPanel.add(rulesButton);
         jPanel.add(settingsButton);

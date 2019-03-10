@@ -28,15 +28,21 @@ public class MenuNavigator {
             currentmenu = new PlaySetupMenu(jFrame);
         }
         else if (num == 3){
-            currentmenu = new PlayMenu(jFrame);
+            currentmenu = new CharacterSetUpMenu(jFrame);
         }
         else if (num == 4){
+            currentmenu = new PlayMenu(jFrame);
+        }
+        else if (num == 5){
            currentmenu = new SettingsMenu(jFrame);
         }
     }
 
     public void MakeMenu(int num, JFrame jFrame, Player[] players){
         if (num == 3){
+            currentmenu = new CharacterSetUpMenu(jFrame, players);
+        }
+        else if (num == 4){
            currentmenu = new PlayMenu(jFrame, players);
         }
     }

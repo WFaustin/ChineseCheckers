@@ -2,6 +2,9 @@ package com.company;
 
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 public abstract class Menu {
 
@@ -85,4 +88,22 @@ public abstract class Menu {
         //
     }
 
+    public JMenuBar createMenuBar(){
+        JMenuBar menuBar = new JMenuBar();
+        JMenu firstmenu = new JMenu("File");
+
+        JMenuItem first1menuitem = new JMenuItem("Quit");
+        first1menuitem.addActionListener(new MenuBarListener());
+
+        return menuBar;
+    }
+
+    public class MenuBarListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals("Quit")){
+
+            }
+        }
+    }
 }

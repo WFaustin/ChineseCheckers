@@ -33,10 +33,14 @@ public class PlaySetupMenu extends Menu{
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("OK")){
-                //int s = (int) nop.getSelectedItem();
-                Player[] players = new Player[2];
-                players[0] = new Player("red");
-                players[1] = new Player("blue");
+                int s = (int) nop.getSelectedItem();
+                Player [] players = new Player[s];
+
+                for (int i = 0; i < s; i++){
+                    players[i] = new Player();
+                    players[i].setNum(i);
+                    players[i].setName("P"+players[i].getNum()+1);
+                }
                 getMenuNavigator().MakeMenu(3, playsetupMenuJFrame, players);
                 playsetupMenuJFrame.remove(playsetuppanel);
                 //replace 2 with s
@@ -80,6 +84,9 @@ public class PlaySetupMenu extends Menu{
         JComboBox numofPlayers = new JComboBox();
         numofPlayers.addItem(2);
         numofPlayers.addItem(3);
+        numofPlayers.addItem(4);
+        numofPlayers.addItem(5);
+        numofPlayers.addItem(6);
         nop = numofPlayers;
         JButton submit = new JButton("OK");
         submit.addActionListener(new PlaySetupMenuButtonListener());

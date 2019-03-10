@@ -8,6 +8,7 @@ public class Board {
     private COLORS [][] board_color = null;
     private ImageIcon board_image = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Board.png");
     private JLabel board_label = new JLabel(board_image);
+    private BoardPanel boardPanel = new BoardPanel();
     //Voided, Filled, Empty
     public enum BoardTileState{
         V, F, E;
@@ -16,6 +17,12 @@ public class Board {
     public Board(){
         board_label.setIcon(board_image);
         CreateBoard();
+    }
+
+
+
+    public BoardPanel getBoardPanel(){
+        return boardPanel;
     }
 
     public ImageIcon getBoard_image() {
