@@ -8,6 +8,7 @@ public class MenuManager {
     private String currentmenuName = "placeholder menu";
     private JFrame jFrame = new JFrame();
     private MenuNavigator menuNavigator = new MenuNavigator();
+    private GameManager gm = new GameManager();
 
 
     private Menu menu = null;

@@ -7,8 +7,8 @@ public class LargeManager {
 
 
     public LargeManager(){
+        //gameManager = new GameManager();
         menuManager = new MenuManager();
-        gameManager = new GameManager();
     }
 
 }

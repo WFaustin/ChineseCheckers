@@ -12,7 +12,9 @@ public class PlayMenu extends Menu {
     private static int playMenunum = 4;
     private static String playMenuname = "PlayMenu";
     private static JFrame playMenuJFrame = null;
-    private Board board = new Board();
+    private Board board = null;
+    private JLayeredPane layeredPane = null;
+    private GameManager gm = null;
 
 
     public PlayMenu(){
@@ -28,15 +30,23 @@ public class PlayMenu extends Menu {
     public PlayMenu(JFrame jFrame, Player[] players){
         this.players = players;
         playMenuJFrame = jFrame;
+        gm = new GameManager();
+        createJFrame();
+    }
+
+    public PlayMenu(JFrame jFrame, Player[] players, GameManager gm){
+        this.players = players;
+        playMenuJFrame = jFrame;
+        this.gm = gm;
         createJFrame();
     }
 
     @Override
     public void createJFrame() {
 
-        JPanel panel = new JPanel();
+       JPanel panel = new JPanel();
        playMenuJFrame.setContentPane(board.getBoardPanel());
-
+       layeredPane = board.getLayeredPane();
 
         /*
         p.getPieceLabel().setSize(40,40);
@@ -44,10 +54,8 @@ public class PlayMenu extends Menu {
         p.getPieceLabel().setLocation(origin);
         */
 
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(600, 600));
-        playMenuJFrame.add(layeredPane);
 
+        playMenuJFrame.add(layeredPane);
 
 
         /*
@@ -76,7 +84,6 @@ public class PlayMenu extends Menu {
         board.getBoardPanel().add(BorderLayout.SOUTH, p1);
         playMenuJFrame.getContentPane().add(BorderLayout.CENTER, board.getBoardPanel());
         */
-
         playMenuJFrame.setSize(600,600);
         playMenuJFrame.setResizable(false);
         playMenuJFrame.setVisible(true);

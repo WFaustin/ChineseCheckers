@@ -15,7 +15,8 @@ public class CharacterSetUpMenu extends Menu{
     private Player [] players = null;
     private JButton ok = null;
     private JPanel b = null;
-
+    private JComboBox [] playerchoices = null;
+    private JPanel [] playerpanels = null;
 
 
     public CharacterSetUpMenu(){
@@ -34,15 +35,14 @@ public class CharacterSetUpMenu extends Menu{
 
     @Override
     public void createJFrame() {
-        System.out.println(players.length);
         JPanel bigPanel = new JPanel();
         bigPanel.setLayout(new BoxLayout(bigPanel, BoxLayout.X_AXIS));
         JPanel [] characterpanelarray = new JPanel[players.length];
-
+        JComboBox [] addedplayerchoices = new JComboBox[players.length];
         for (int i = players.length - 1; i >= 0; i--){
             JPanel s = new JPanel();
             s.setLayout(new BoxLayout(s, BoxLayout.Y_AXIS));
-            JLabel stitle = new JLabel("P" + players[i].getNum());
+            JLabel stitle = new JLabel("P" + (players[i].getNum()+1));
             JTextArea sname = new JTextArea();
             JComboBox scolor = new JComboBox();
             scolor.addItem("Red");
@@ -51,19 +51,22 @@ public class CharacterSetUpMenu extends Menu{
             scolor.addItem("Green");
             scolor.addItem("White");
             scolor.addItem("Black");
-            JButton ssubmit = new JButton("P" + players[i].getNum() + " Ready!");
-            ssubmit.addActionListener(new CharacterSetUpListener());
+            //JButton ssubmit = new JButton("P" + players[i].getNum()+1 + " Ready!");
+            //ssubmit.addActionListener(new CharacterSetUpListener());
             s.add(stitle);
             s.add(sname);
             s.add(scolor);
-            s.add(ssubmit);
+            //s.add(ssubmit);
             characterpanelarray[i] = s;
+            addedplayerchoices[i] = scolor;
         }
 
         for (int i = 0; i < characterpanelarray.length; i++){
             characterpanelarray[i].setBackground(Color.darkGray);
-            bigPanel.add(characterpanelarray[i], BorderLayout.EAST);
+            bigPanel.add(characterpanelarray[i], BorderLayout.CENTER);
         }
+        playerchoices = addedplayerchoices;
+        playerpanels = characterpanelarray;
         JButton submit = new JButton("OK");
         submit.addActionListener(new CharacterSetUpListener());
         ok = submit;
@@ -77,11 +80,53 @@ public class CharacterSetUpMenu extends Menu{
 
     }
 
+    private void checkPlayerColor(){
+        for (int i = 0; i < playerchoices.length; i++){
+            if (i == playerchoices.length - 1){
+                //Stop the loop, do nothing
+                break;
+            }
+            else {
+                for (int j = i+1;j < playerchoices.length; j++){
+                    if (playerchoices[i].getSelectedItem() == playerchoices[j].getSelectedItem()){
+                        if (playerchoices[i].getSelectedItem() == playerchoices[i].getItemAt(0)){
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(1));
+                        }
+                        else if(playerchoices[i].getSelectedItem() == playerchoices[i].getItemAt(1)){
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(2));
+                        }
+                        else if(playerchoices[i].getSelectedItem() == playerchoices[i].getItemAt(2)){
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(3));
+                        }
+                        else if(playerchoices[i].getSelectedItem() == playerchoices[i].getItemAt(3)){
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(4));
+                        }
+                        else if(playerchoices[i].getSelectedItem() == playerchoices[i].getItemAt(4)){
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(5));
+                        }
+                        else if(playerchoices[i].getSelectedItem() == playerchoices[i].getItemAt(5)){
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(6));
+                        }
+                        else{
+                            playerchoices[i].setSelectedItem(playerchoices[i].getItemAt(0));
+                        }
+                    }
+                    players[i].setColor(playerchoices[i].getSelectedItem().toString());
+                }
+            }
+
+        }
+        for (int i = 0; i < playerchoices.length; i++){
+            System.out.println(playerchoices[i].getSelectedItem());
+        }
+    }
+
     public class CharacterSetUpListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("OK")){
+                checkPlayerColor();
                 charactersetupMenuJFrame.remove(ok);
                 charactersetupMenuJFrame.remove(b);
                 getMenuNavigator().MakeMenu(4, charactersetupMenuJFrame, players);

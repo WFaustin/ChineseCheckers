@@ -5,6 +5,7 @@ import javax.swing.*;
 public class MenuNavigator {
 
     private Menu currentmenu = null;
+    private GameManager gm = null;
 
     public MenuNavigator(){
 
@@ -12,6 +13,12 @@ public class MenuNavigator {
 
     public MenuNavigator(Menu menu){
         currentmenu = menu;
+
+    }
+
+    public MenuNavigator(Menu menu, GameManager gamem){
+        currentmenu = menu;
+        gm = gamem;
 
     }
 

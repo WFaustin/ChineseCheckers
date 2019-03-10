@@ -12,6 +12,7 @@ public abstract class Menu {
     private int menuNum = -1;
     private JFrame menuJFrame = null;
     private static MenuNavigator menuNavigator = null;
+    private static GameManager gm = null;
 
     public static MenuNavigator getMenuNavigator() {
         return menuNavigator;
@@ -19,6 +20,14 @@ public abstract class Menu {
 
     public static void setMenuNavigator(MenuNavigator menuNavigator) {
         Menu.menuNavigator = menuNavigator;
+    }
+
+    public static GameManager getGm() {
+        return gm;
+    }
+
+    public static void setGm(GameManager gm) {
+        Menu.gm = gm;
     }
 
     public Menu(){
