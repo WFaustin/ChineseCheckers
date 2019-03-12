@@ -2,7 +2,7 @@ package com.company;
 
 
 enum COLORS{
-    Red, Blue, Green, Yellow, White, Orange, Black;
+    Red, Blue, Green, Yellow, White, Orange, Black, Empty;
 }
 
 
@@ -18,12 +18,15 @@ public class Player {
         color = COLORS.Red;
         name = "P1";
         num = 1;
+        setColor(COLORS.Red);
+        CreatePieces();
     }
 
     public Player(String colors){
         name = "P1";
         num = 1;
         setColor(colors);
+        CreatePieces();
     }
 
     public void setColor(String colors){
@@ -48,6 +51,7 @@ public class Player {
         else if (colors == "orange" || colors == "Orange"){
             color = COLORS.Orange;
         }
+        CreatePieces();
     }
 
     public void CreatePieces(){

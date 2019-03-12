@@ -126,7 +126,14 @@ public class CharacterSetUpMenu extends Menu{
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("OK")){
-                checkPlayerColor();
+                //checkPlayerColor();
+
+
+                for (int i = 0; i < players.length; i++){
+                    players[i].setColor((String) playerchoices[i].getSelectedItem());
+                    players[i].CreatePieces();
+                }
+
                 charactersetupMenuJFrame.remove(ok);
                 charactersetupMenuJFrame.remove(b);
                 getMenuNavigator().MakeMenu(4, charactersetupMenuJFrame, players);

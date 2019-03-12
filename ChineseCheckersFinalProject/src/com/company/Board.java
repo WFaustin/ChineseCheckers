@@ -12,6 +12,17 @@ public class Board {
     private JLabel board_label = new JLabel(board_image);
     private BoardPanel boardPanel = new BoardPanel();
     private JLayeredPane layeredPane = new JLayeredPane();
+
+
+    //regions of the board, stored as points so it is easy to get the X and Y.
+    //NOT TO BE CONFUSED WITH BOARD LOCATION.
+    private Point [] north_board = null;
+    private Point [] northwest_board = null;
+    private Point [] northeast_board = null;
+    private Point [] southwest_board = null;
+    private Point [] southeast_board = null;
+    private Point [] south_board = null;
+
     //Voided, Filled, Empty
     public enum BoardTileState{
         V, F, E;
@@ -22,7 +33,31 @@ public class Board {
         CreateBoard();
     }
 
+    public Point[][] getBoard_location() {
+        return board_location;
+    }
 
+    public Point[] getRegions(int i) {
+        if(i == 0){
+            return north_board;
+        }
+        else if(i == 1){
+            return south_board;
+        }
+        else if(i == 2){
+            return northeast_board;
+        }
+        else if(i == 3){
+            return southwest_board;
+        }
+        else if(i == 4){
+            return southeast_board;
+        }
+        else{
+            return northwest_board;
+        }
+
+    }
 
     public BoardPanel getBoardPanel(){
         return boardPanel;
@@ -109,9 +144,11 @@ public class Board {
 
         //Make the board
         BoardTileState[][] newboard = new BoardTileState[17][51];
+        board_color = new COLORS[17][51];
         for (int i = 0; i < newboard.length; i++){
             for (int j = 0; j < newboard[i].length; j++){
                 newboard[i][j] = BoardTileState.V;
+                board_color[i][j] = COLORS.Empty;
             }
         }
 
@@ -272,11 +309,11 @@ public class Board {
         pointboard[5][18] = new Point(155, 171);
         pointboard[5][20] = new Point(190, 171);
         pointboard[5][22] = new Point(225, 171);
-        pointboard[5][24] = new Point(260, 229);
-        pointboard[5][26] = new Point(295, 229);
-        pointboard[5][28] = new Point(330, 229);
-        pointboard[5][30] = new Point(365, 229);
-        pointboard[5][32] = new Point(400, 229);
+        pointboard[5][24] = new Point(260, 171);
+        pointboard[5][26] = new Point(295, 171);
+        pointboard[5][28] = new Point(330, 171);
+        pointboard[5][30] = new Point(365, 171);
+        pointboard[5][32] = new Point(400, 171);
         pointboard[5][34] = new Point(435, 171);
         pointboard[5][36] = new Point(470, 171);
         pointboard[6][15] = new Point(111, 200);
@@ -371,6 +408,8 @@ public class Board {
         //Making LayeredPane
         layeredPane.setPreferredSize(new Dimension(600, 600));
 
+
+
         //Set the regions of the board for win conditions.
         setRegions();
 
@@ -388,7 +427,77 @@ public class Board {
 
     public void setRegions(){
         //North - set
+        north_board = new Point[10];
+        north_board[0] = new Point(0,25);
+        north_board[1] = new Point(1,24);
+        north_board[2] = new Point(1,26);
+        north_board[3] = new Point(2,23);
+        north_board[4] = new Point(2,25);
+        north_board[5] = new Point(2,27);
+        north_board[6] = new Point(3,22);
+        north_board[7] = new Point(3,24);
+        north_board[8] = new Point(3,26);
+        north_board[9] = new Point(3,28);
 
+        northwest_board = new Point[10];
+        northwest_board[0] = new Point(4,13);
+        northwest_board[1] = new Point(4,15);
+        northwest_board[2] = new Point(4,17);
+        northwest_board[3] = new Point(4,19);
+        northwest_board[4] = new Point(5,14);
+        northwest_board[5] = new Point(5,16);
+        northwest_board[6] = new Point(5,18);
+        northwest_board[7] = new Point(6,15);
+        northwest_board[8] = new Point(6,17);
+        northwest_board[9] = new Point(7,16);
+
+        northeast_board = new Point[10];
+        northeast_board[0] = new Point(4,37);
+        northeast_board[1] = new Point(4,35);
+        northeast_board[2] = new Point(4,33);
+        northeast_board[3] = new Point(4,31);
+        northeast_board[4] = new Point(5,36);
+        northeast_board[5] = new Point(5,34);
+        northeast_board[6] = new Point(5,32);
+        northeast_board[7] = new Point(6,35);
+        northeast_board[8] = new Point(6,33);
+        northeast_board[9] = new Point(7,34);
+
+        southeast_board = new Point[10];
+        southeast_board[0] = new Point(12,37);
+        southeast_board[1] = new Point(12,35);
+        southeast_board[2] = new Point(12,33);
+        southeast_board[3] = new Point(12,31);
+        southeast_board[4] = new Point(11,36);
+        southeast_board[5] = new Point(11,34);
+        southeast_board[6] = new Point(11,32);
+        southeast_board[7] = new Point(10,35);
+        southeast_board[8] = new Point(10,33);
+        southeast_board[9] = new Point(9,34);
+
+        southwest_board = new Point[10];
+        southwest_board[0] = new Point(12,13);
+        southwest_board[1] = new Point(12,15);
+        southwest_board[2] = new Point(12,17);
+        southwest_board[3] = new Point(12,19);
+        southwest_board[4] = new Point(11,14);
+        southwest_board[5] = new Point(11,16);
+        southwest_board[6] = new Point(11,18);
+        southwest_board[7] = new Point(10,15);
+        southwest_board[8] = new Point(10,17);
+        southwest_board[9] = new Point(9,16);
+
+        south_board = new Point[10];
+        south_board[0] = new Point(16,25);
+        south_board[1] = new Point(15,24);
+        south_board[2] = new Point(15,26);
+        south_board[3] = new Point(14,23);
+        south_board[4] = new Point(14,25);
+        south_board[5] = new Point(14,27);
+        south_board[6] = new Point(13,22);
+        south_board[7] = new Point(13,24);
+        south_board[8] = new Point(13,26);
+        south_board[9] = new Point(13,28);
     }
 
 

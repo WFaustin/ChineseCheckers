@@ -30,7 +30,8 @@ public class PlayMenu extends Menu {
     public PlayMenu(JFrame jFrame, Player[] players){
         this.players = players;
         playMenuJFrame = jFrame;
-        gm = new GameManager();
+        gm = new GameManager(players);
+        board = gm.getBoard();
         createJFrame();
     }
 
@@ -49,13 +50,24 @@ public class PlayMenu extends Menu {
        layeredPane = board.getLayeredPane();
 
         /*
+        Player pl = new Player("Red");
+        Piece p = new Piece(COLORS.Red);
+
         p.getPieceLabel().setSize(40,40);
         Point origin = new Point(295, 458);
         p.getPieceLabel().setLocation(origin);
+
+        pl.getPieces()[1].getPieceLabel().setSize(40,40);
+        Point og = new Point(260, 114);
+        pl.getPieces()[1].getPieceLabel().setLocation(og);
+
+        layeredPane.add(p.getPieceLabel());
+        layeredPane.add(pl.getPieces()[1].getPieceLabel());
         */
 
 
         playMenuJFrame.add(layeredPane);
+
 
 
         /*

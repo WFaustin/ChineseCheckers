@@ -29,6 +29,11 @@ public class Piece {
         IdentifyColor();
     }
 
+    public Piece(String antipiece, COLORS c){
+        color = c;
+        IdentifyAfterColor();
+    }
+
     public JLabel getPieceLabel() {
         return pieceLabel;
     }
@@ -98,8 +103,8 @@ public class Piece {
         }
         else if (color == COLORS.Black){
             name = "black";
-            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Black Piece.png";
-            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Black Piece.png");
+            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Gray Piece.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Gray Piece.png");
             pi = new PieceImage(pieceimagelink);
         }
         else{
@@ -112,21 +117,69 @@ public class Piece {
         }
         pieceLabel = new JLabel(piecepicture);
         pieceLabel.setIcon(piecepicture);
-        pieceLabel.addMouseListener(ml);
+        //pieceLabel.addMouseListener(ml);
     }
 
+    private void IdentifyAfterColor(){
+        if (color == COLORS.Red){
+            name = "red";
+            pieceimagelink ="C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Red Outline.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Red Outline.png");
+            pi = new PieceImage(pieceimagelink);
+        }
+        else if (color == COLORS.Blue){
+            name = "blue";
+            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Blue Outline.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Blue Outline.png");
+            pi = new PieceImage(pieceimagelink);
+        }
+        else if (color == COLORS.Green){
+            name = "green";
+            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Green Outline.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Green Outline.png");
+            pi = new PieceImage(pieceimagelink);
+        }
+        else if (color == COLORS.Yellow){
+            name = "yellow";
+            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Yellow Outline.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Yellow Outline.png");
+            pi = new PieceImage(pieceimagelink);
+        }
+        else if (color == COLORS.White){
+            name = "white";
+            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers White Outline.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers White Outline.png");
+            pi = new PieceImage(pieceimagelink);
+        }
+        else if (color == COLORS.Black){
+            name = "black";
+            pieceimagelink = "C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Gray Outline.png";
+            piecepicture = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Gray Outline.png");
+            pi = new PieceImage(pieceimagelink);
+        }
+        else{
 
+        }
+        try {
+            piece = ImageIO.read(new File(pieceimagelink));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pieceLabel = new JLabel(piecepicture);
+        pieceLabel.setIcon(piecepicture);
+        //pieceLabel.addMouseListener(ml);
+    }
+
+    /*
     private MouseAdapter ml = new MouseAdapter() {
 
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
-            if (cool == true){
-                //System.out.println(new MouseEvent().getX());
-            }
+            System.out.println(pieceLabel.getLocation());
         }
 
 
     };
-
+       */
 }
