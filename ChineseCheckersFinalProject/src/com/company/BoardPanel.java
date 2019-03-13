@@ -12,7 +12,7 @@ public class BoardPanel extends JPanel {
 
     public BoardPanel(){
         try {
-            i = ImageIO.read(new File("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Board.png"));
+            i = ImageIO.read(getClass().getResource("ChineseCheckersArt/Chinese Checkers Board.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

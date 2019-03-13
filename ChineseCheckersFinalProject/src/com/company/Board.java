@@ -8,7 +8,7 @@ public class Board {
     private BoardTileState [][] board = null;
     private COLORS [][] board_color = null;
     private Point[][] board_location = null;
-    private ImageIcon board_image = new ImageIcon("C:\\Users\\maste\\Documents\\ChineseCheckers\\ChineseCheckersFinalProject\\src\\com\\company\\ChineseCheckersArt\\Chinese Checkers Board.png");
+    private ImageIcon board_image =new ImageIcon(getClass().getResource("ChineseCheckersArt/Chinese Checkers Board.png"));
     private JLabel board_label = new JLabel(board_image);
     private BoardPanel boardPanel = new BoardPanel();
     private JLayeredPane layeredPane = new JLayeredPane();
@@ -369,8 +369,8 @@ public class Board {
         pointboard[10][29] = new Point(348, 258);
         pointboard[10][31] = new Point(383, 258);
         pointboard[10][33] = new Point(415, 258);
-        pointboard[11][16] = new Point(120, 287);
-        pointboard[11][18] = new Point(155, 287);
+        pointboard[11][16] = new Point(129, 289);
+        pointboard[11][18] = new Point(158, 287);
         pointboard[11][20] = new Point(190, 287);
         pointboard[11][22] = new Point(225, 287);
         pointboard[11][24] = new Point(260, 287);
@@ -380,8 +380,8 @@ public class Board {
         pointboard[11][32] = new Point(400, 287);
         pointboard[11][34] = new Point(435, 287);
         pointboard[12][15] = new Point(111, 313);
-        pointboard[12][17] = new Point(142, 313);
-        pointboard[12][19] = new Point(175, 313);
+        pointboard[12][17] = new Point(143, 313);
+        pointboard[12][19] = new Point(177, 313);
         pointboard[12][21] = new Point(208, 313);
         pointboard[12][23] = new Point(244, 313);
         pointboard[12][25] = new Point(277, 313);
@@ -390,10 +390,10 @@ public class Board {
         pointboard[12][31] = new Point(381, 313);
         pointboard[12][33] = new Point(416, 313);
         pointboard[12][35] = new Point(449, 313);
-        pointboard[13][14] = new Point(87, 343);
-        pointboard[13][16] = new Point(120, 343);
-        pointboard[13][18] = new Point(155, 343);
-        pointboard[13][20] = new Point(190, 343);
+        pointboard[13][14] = new Point(92, 343);
+        pointboard[13][16] = new Point(125, 343);
+        pointboard[13][18] = new Point(159, 343);
+        pointboard[13][20] = new Point(193, 343);
         pointboard[13][22] = new Point(225, 343);
         pointboard[13][24] = new Point(260, 343);
         pointboard[13][26] = new Point(295, 343);
@@ -404,8 +404,8 @@ public class Board {
         pointboard[13][36] = new Point(470, 343);
         pointboard[14][13] = new Point(76, 370);
         pointboard[14][15] = new Point(111, 370);
-        pointboard[14][17] = new Point(142, 370);
-        pointboard[14][19] = new Point(176, 370);
+        pointboard[14][17] = new Point(146, 370);
+        pointboard[14][19] = new Point(179, 370);
         pointboard[14][21] = new Point(210, 370);
         pointboard[14][23] = new Point(245, 370);
         pointboard[14][25] = new Point(279, 370);

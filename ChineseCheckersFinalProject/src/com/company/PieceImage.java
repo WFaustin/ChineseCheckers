@@ -20,7 +20,7 @@ public class PieceImage extends JLabel {
         setPreferredSize(new Dimension(20, 20));
         pieceimagelink = s;
         try {
-            pieceimage = ImageIO.read(new File(pieceimagelink));
+            pieceimage = ImageIO.read(getClass().getResource(pieceimagelink));
         } catch (IOException e) {
             e.printStackTrace();
         }
