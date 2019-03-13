@@ -1,8 +1,8 @@
 package com.company;
 
 import javax.swing.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Vector;
 
 //Games are run by a game manager. They each come with their own rules.
@@ -20,13 +20,18 @@ public class Game {
      */
 
     private Board board = null;
+    private GameManager g = null;
     private Player [] players = null;
     private boolean isGameContinuing = true;
     private int playerturncounter = 0;
     private Piece piq = null;
     private Vector<Piece> pieceafterimages = new Vector<Piece>(13);
     private int afterimageselected = 0;
-    private boolean hasMoved = false;
+    private boolean hasJumpMoved = false;
+    private Player winner = null;
+    private Point lastPieceJumped = null;
+    private JButton button = null;
+    private Vector<Point> lastPiecesJumped = new Vector<Point>();
 
 
     public Game(){
@@ -40,8 +45,31 @@ public class Game {
         playGame();
     }
 
+    public Game(Board b, Player [] p, GameManager g){
+        ReplenishVector();
+        board = b;
+        players = p;
+        this.g = g;
+        board.getLayeredPane().setFocusTraversalKeysEnabled(false);
+        playGame();
+    }
+
+    public Game(Board b, Player [] p, GameManager g, JButton jb){
+        ReplenishVector();
+        board = b;
+        players = p;
+        this.g = g;
+        button = jb;
+        playGame();
+    }
+
 
     public void ReplenishVector(){
+        for (int i = 0; i < pieceafterimages.size(); i++){
+            if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
+                board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
+            }
+        }
         for (int i = 0; i < 13; i++){
             pieceafterimages.add(new Piece(COLORS.Red));
         }
@@ -51,91 +79,121 @@ public class Game {
     }
 
 
-    public void playGame(){
-        playerturncounter = 0;
-        movePiece(players[playerturncounter]);
-        //while (isGameContinuing == true){
-            //movePiece(players[playerturncounter]);
-            /*
-            if (hasMoved == false){
-            }
 
-            if(CheckWinState() == true){
-                isGameContinuing = false;
-            }
-            else{
-                //++playerturncounter;
-                if (playerturncounter > max){
-                    playerturncounter = 0;
+    public void CreateButton(){
+
+
+
+        /*
+        JButton finishturn = new JButton("??? Player Turn");
+        finishturn.setBackground(Color.WHITE);
+        finishturn.setMaximumSize(new Dimension(90, 90));
+        finishturn.setLocation(0, 0);
+        board.getLayeredPane().add(finishturn);
+        finishturn.addActionListener(new GameButtonListener());
+        button = finishturn;
+        board.getLayeredPane().repaint();
+        */
+    }
+
+
+    public void RenameButton(){
+        button.setText(players[playerturncounter].getColor().toString() + " Player Turn");
+        board.getLayeredPane().repaint();
+    }
+
+    public boolean CheckMovementLine(){
+
+        for (int i = 0; i < 3; i++){
+            if (lastPieceJumped != null) {
+                if (lastPieceJumped.getX() == lastPiecesJumped.get(i).getX() && lastPieceJumped.getY() == lastPiecesJumped.get(i).getY()) {
+                    return true;
                 }
             }
-            //sleep(2000);
-            isGameContinuing = false;
-            */
-        //}
+
+        }
+        return false;
     }
 
-    public void continueGame(){
-        playerturncounter = playerturncounter + 1;
-        if (playerturncounter > players.length - 1){
-            playerturncounter = 0;
-        }
-        movePiece(players[playerturncounter]);
+    public Player getWinner() {
+        return winner;
     }
+
+    public void playGame(){
+        boolean s = CheckWinState();
+        if (s == false){
+            playerturncounter = 0;
+            movePiece(players[playerturncounter]);
+        }
+        else{
+           g.displayWinner(winner);
+
+        }
+    }
+
+
+
+    public void continueGame(){
+        if (CheckWinState() == false) {
+            /*
+            for (int i = 0; i < pieceafterimages.size(); i++) {
+                if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0) {
+                    board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
+                }
+                pieceafterimages.remove(pieceafterimages.get(i));
+            }
+            for (int i = 0; i < pieceafterimages.size(); i++) {
+                pieceafterimages.remove(i);
+            }
+            ReplenishVector();
+            */
+            hasJumpMoved = false;
+            for (int i = 0; i < lastPiecesJumped.size(); i++){
+                lastPiecesJumped.remove(lastPiecesJumped.get(i));
+            }
+            lastPieceJumped = null;
+            playerturncounter = playerturncounter + 1;
+            if (playerturncounter > players.length - 1) {
+                playerturncounter = 0;
+            }
+            movePiece(players[playerturncounter]);
+        }
+        else {
+            System.out.println(winner.getName() + "Help!");
+            g.displayWinner(winner);
+            //Go back to gameMana
+        }
+    }
+
 
 
     public boolean CheckWinState(){
-        if(CheckNorthWinState() == true){
-            return true;
+        board.getLayeredPane().repaint();
+        int s = 0;
+        for (int c = 0; c < players.length; c++) {
+            for (int i = 0; i < players[c].getPieces().length; i++) {
+                if ((checkHelper(players[c].getPieces()[i].getPieceLabel().getLocation(), players[c].winRegions)) == true) {
+                    s++;
+                }
+                if (s == 10){
+                    winner = players[c];
+                    return true;
+                }
+                else {
+                    s = 0;
+                }
+            }
         }
-        if(CheckNorthEastWinState() == true){
-            return true;
-        }
-        if(CheckNorthWestWinState() == true){
-            return true;
-        }
-        if(CheckSouthWinState() == true){
-            return true;
-        }
-        if(CheckSouthWestWinState() == true){
-            return true;
-        }
-        if(CheckSouthEastWinState() == true){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-
-    public boolean CheckNorthWinState(){
-
         return false;
+
     }
 
-    public boolean CheckNorthWestWinState(){
-
-        return false;
-    }
-
-    public boolean CheckNorthEastWinState(){
-
-        return false;
-    }
-
-    public boolean CheckSouthWinState(){
-
-        return false;
-    }
-
-    public boolean CheckSouthWestWinState(){
-
-        return false;
-    }
-
-    public boolean CheckSouthEastWinState(){
-
+    private boolean checkHelper(Point p, Point [] q){
+        for (int i = 0; i < q.length; i++){
+            if (p.getY() == board.getBoard_location()[(int)q[i].getX()][(int)q[i].getY()].getY() && p.getX() == board.getBoard_location()[(int)q[i].getX()][(int)q[i].getY()].getX()){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -144,6 +202,7 @@ public class Game {
 
         for (int i = 0; i < p.getPieces().length; i++){
             final int v = i;
+            int x = 0;
             p.getPieces()[i].getPieceLabel().addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -154,6 +213,10 @@ public class Game {
                     if (p.getPieces()[v].getColor() == players[playerturncounter].getColor()) {
                         piq = p.getPieces()[v];
                         CalculateValidMove(p.getPieces()[v]);
+                        System.out.println(p.getPieces()[v].getPieceLabel().getLocation());
+                        for (int j = 0; j < p.getPieces().length; j++){
+                            p.getPieces()[j].getPieceLabel().removeMouseListener(this);
+                        }
                     }
                 }
 
@@ -192,7 +255,7 @@ public class Game {
 
         outerloop:
         for (int i = 0; i < board.getBoard_location().length; i++){
-            if (i == 17){
+            if (i == 21){
 
             }
             else {
@@ -210,618 +273,1106 @@ public class Game {
             }
         }
 
-        //How pieces can move
+        //Big if statement checking if ANY of these moves are valid.
+        if((board.getBoard()[first + 1][second + 1] == Board.BoardTileState.E && hasJumpMoved == false) || (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.E && hasJumpMoved == false) ||
+                (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.E && hasJumpMoved == false) || (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.E && hasJumpMoved == false) ||
+                (board.getBoard()[first][second + 2] == Board.BoardTileState.E && hasJumpMoved == false) || (board.getBoard()[first][second - 2] == Board.BoardTileState.E && hasJumpMoved == false) ||
+                (board.getBoard()[first + 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 2][second + 2]) == true) || (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first - 2][second + 2]) == true) ||
+                (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 2][second - 2]) == true) || (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first - 2][second - 2]) == true) ||
+                (board.getBoard()[first][second - 2] == Board.BoardTileState.F && board.getBoard()[first][second - 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second - 4]) == true) || (board.getBoard()[first][second + 2] == Board.BoardTileState.F && board.getBoard()[first][second + 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 2][second + 2]) == true)) {
 
-        if (board.getBoard()[first + 1][second + 1] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first + 1][second + 1]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f + 1][s + 1]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
+            if (board.getBoard()[first + 1][second + 1] == Board.BoardTileState.E && hasJumpMoved == false) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first + 1][second + 1]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f + 1][s + 1]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f + 1][s + 1] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
 
                     }
-                    ReplenishVector();
-                    board.getBoard()[f+1][s+1] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f+1][s+1] = piece.getColor();
-                    continueGame();
-                }
 
-                @Override
-                public void mousePressed(MouseEvent e) {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
 
-                }
+                    }
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
 
-                }
+                    }
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
+                    @Override
+                    public void mouseExited(MouseEvent e) {
 
-                }
+                    }
+                });
+            }
 
-                @Override
-                public void mouseExited(MouseEvent e) {
+            if (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.E && hasJumpMoved == false) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first - 1][second + 1]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f - 1][s + 1]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f - 1][s + 1] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        continueGame();
+                    }
 
-                }
-            });
-            afterimageselected = 1;
-            pieceafterimages.add(afterimageselected, piece);
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.E && hasJumpMoved == false) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first - 1][second - 1]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f - 1][s - 1]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f - 1][s - 1] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.E && hasJumpMoved == false) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first + 1][second - 1]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f + 1][s - 1]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f + 1][s - 1] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first][second + 2] == Board.BoardTileState.E && hasJumpMoved == false) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first][second + 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f][s + 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f][s + 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first][second - 2] == Board.BoardTileState.E && hasJumpMoved == false) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first][second - 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f][s - 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f][s - 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first + 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 1][second + 1]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first + 2][second + 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f + 2][s + 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f + 2][s + 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = p.getPieceLabel().getLocation();
+                        lastPiecesJumped.add(board.getBoard_location()[f+1][s+1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first - 1][second + 1]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first - 2][second + 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f - 2][s + 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f - 2][s + 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = p.getPieceLabel().getLocation();
+                        lastPiecesJumped.add(board.getBoard_location()[f-1][s+1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 1][second - 1]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first + 2][second - 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f + 2][s - 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f + 2][s - 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = p.getPieceLabel().getLocation();
+                        lastPiecesJumped.add(board.getBoard_location()[f+1][s-1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first - 1][second - 1]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first - 2][second - 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f - 2][s - 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f - 2][s - 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = p.getPieceLabel().getLocation();
+                        lastPiecesJumped.add(board.getBoard_location()[f-1][s-1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first][second + 2] == Board.BoardTileState.F && board.getBoard()[first][second + 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second + 2]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first][second + 4]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f][s + 4]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f][s + 4] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPiecesJumped.add(board.getBoard_location()[f][s+2]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first][second - 2] == Board.BoardTileState.F && board.getBoard()[first][second - 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second - 2]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first][second - 4]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f][s - 4]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f][s - 4] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = p.getPieceLabel().getLocation();
+                        lastPiecesJumped.add(board.getBoard_location()[f][s-2]);
+                        CalculateValidJumpMoves(p);
+
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+
+
+
+
+        }
+        else{
+           continueGame();
         }
 
-        if (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first - 1][second + 1]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f - 1][s + 1]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
+    }
+
+
+    public void CalculateValidJumpMoves(Piece p){
+        int first = 0;
+        int second = 0;
+
+        outerloop:
+        for (int i = 0; i < board.getBoard_location().length; i++){
+            if (i == 21){
+
+            }
+            else {
+                for (int j = 0; j < board.getBoard_location()[i].length; j++) {
+                    if (board.getBoard_location()[i][j] == null) {
+                        //Don't check
+                    } else {
+                        if (p.getPieceLabel().getLocation().getX() == board.getBoard_location()[i][j].getX() &&  p.getPieceLabel().getLocation().getY() == board.getBoard_location()[i][j].getY()) {
+                            first = i;
+                            second = j;
+                            break outerloop;
                         }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
                     }
-                    ReplenishVector();
-                    board.getBoard()[f-1][s+1] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f-1][s+1] = piece.getColor();
-                    continueGame();
                 }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 2;
-            pieceafterimages.add(afterimageselected, piece);
+            }
         }
-        if (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first + 1][second - 1]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f + 1][s - 1]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
+        if ((board.getBoard()[first + 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 2][second + 2]) == true && CheckPieceMoved(p, first, second) == false) || (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first - 2][second + 2]) == true && CheckPieceMoved(p, first, second) == false) ||
+                (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 2][second - 2]) == true && CheckPieceMoved(p, first, second) == false) || (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first - 2][second - 2]) == true && CheckPieceMoved(p, first, second) == false) ||
+                (board.getBoard()[first][second - 2] == Board.BoardTileState.F && board.getBoard()[first][second - 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second - 4]) == true && CheckPieceMoved(p, first, second) == false) || (board.getBoard()[first][second + 2] == Board.BoardTileState.F && board.getBoard()[first][second + 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first + 2][second + 2]) == true && CheckPieceMoved(p, first, second) == false)) {
+
+
+            if (board.getBoard()[first + 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first + 2][second + 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                p.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("hi");
+                        p.getPieceLabel().removeMouseListener(this);
+                        board.getLayeredPane().repaint();
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
 
                     }
-                    ReplenishVector();
-                    board.getBoard()[f+1][s-1] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f+1][s-1] = piece.getColor();
-                    continueGame();
 
-                }
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
 
-                @Override
-                public void mousePressed(MouseEvent e) {
+                    }
 
-                }
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
+                    }
 
-                }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
 
-                @Override
-                public void mouseEntered(MouseEvent e) {
+                    }
+                });
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f + 2][s + 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f + 2][s + 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = board.getBoard_location()[f][s];
+                        lastPiecesJumped.add(board.getBoard_location()[f + 1][s + 1]);
+                        CalculateValidJumpMoves(p);
+                    }
 
-                }
+                    @Override
+                    public void mousePressed(MouseEvent e) {
 
-                @Override
-                public void mouseExited(MouseEvent e) {
+                    }
 
-                }
-            });
-            afterimageselected = 3;
-            pieceafterimages.add(afterimageselected, piece);
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second + 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first - 2][second + 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                p.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("hi");
+                        p.getPieceLabel().removeMouseListener(this);
+                        board.getLayeredPane().repaint();
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f - 2][s + 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f - 2][s + 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = board.getBoard_location()[f][s];
+                        lastPiecesJumped.add(board.getBoard_location()[f - 1][s + 1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first + 2][second - 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                p.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("hi");
+                        p.getPieceLabel().removeMouseListener(this);
+                        board.getLayeredPane().repaint();
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f + 2][s - 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f + 2][s - 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = board.getBoard_location()[f][s];
+                        lastPiecesJumped.add(board.getBoard_location()[f + 1][s - 1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second - 2] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first - 2][second - 2]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                p.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("hi");
+                        p.getPieceLabel().removeMouseListener(this);
+                        board.getLayeredPane().repaint();
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f - 2][s - 2]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f - 2][s - 2] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = board.getBoard_location()[f][s];
+                        lastPiecesJumped.add(board.getBoard_location()[f - 1][s - 1]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first][second + 2] == Board.BoardTileState.F && board.getBoard()[first][second + 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first][second + 4]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                p.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("hi");
+                        p.getPieceLabel().removeMouseListener(this);
+                        board.getLayeredPane().repaint();
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f][s + 4]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f][s + 4] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = board.getBoard_location()[f][s];
+                        lastPiecesJumped.add(board.getBoard_location()[f][s + 2]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
+            if (board.getBoard()[first][second - 2] == Board.BoardTileState.F && board.getBoard()[first][second - 4] == Board.BoardTileState.E && CheckifinTrain(board.getBoard_location()[first][second]) == true) {
+                Piece piece = new Piece("afterimage", p.getColor());
+                piece.getPieceLabel().setSize(40, 40);
+                piece.getPieceLabel().setLocation(board.getBoard_location()[first][second - 4]);
+                pieceafterimages.add(piece);
+                final int f = first;
+                final int s = second;
+                board.getLayeredPane().add(piece.getPieceLabel());
+                p.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println("hi");
+                        p.getPieceLabel().removeMouseListener(this);
+                        board.getLayeredPane().repaint();
+                        continueGame();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+                piece.getPieceLabel().addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        removeIfClicked(piece);
+                        pieceafterimages.remove(piece);
+                        p.getPieceLabel().setLocation(board.getBoard_location()[f][s - 4]);
+                        board.getLayeredPane().repaint();
+                        board.getBoard()[f][s - 4] = Board.BoardTileState.F;
+                        board.getBoard()[f][s] = Board.BoardTileState.E;
+                        removedIfNotClicked();
+                        piece.getPieceLabel().removeMouseListener(this);
+                        hasJumpMoved = true;
+                        lastPieceJumped = board.getBoard_location()[f][s];
+                        lastPiecesJumped.add(board.getBoard_location()[f][s - 2]);
+                        CalculateValidJumpMoves(p);
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                });
+            }
+
         }
-        if (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first - 1][second - 1]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f - 1][s - 1]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f-1][s-1] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f-1][s-1] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 4;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first][second + 2] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first][second + 2]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f][s + 2]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f][s+2] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f][s+2] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 5;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first][second - 2] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first][second - 2]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f][s - 2]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f][s-2] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f][s-2] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 6;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first + 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second + 2] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first + 2][second + 2]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f + 2][s + 2]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f+2][s+2] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f+2][s+2] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 7;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first - 1][second + 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second + 2] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first - 2][second + 2]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f - 2][s + 2]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f-2][s+2] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f-1][s+2] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 8;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first - 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first - 2][second - 2] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first - 2][second - 2]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f - 2][s - 2]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f-2][s-2] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f-2][s-2] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 9;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first + 1][second - 1] == Board.BoardTileState.F && board.getBoard()[first + 2][second - 2] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first + 2][second - 2]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f + 2][s - 2]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f+2][s-2] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f+2][s-2] = piece.getColor();
-                    continueGame();
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 10;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first][second - 2] == Board.BoardTileState.F && board.getBoard()[first][second - 4] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first][second - 4]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f][s - 4]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f][s-4] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f][s-4] = piece.getColor();
-                    continueGame();
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 11;
-            pieceafterimages.add(afterimageselected, piece);
-        }
-        if (board.getBoard()[first][second + 2] == Board.BoardTileState.F && board.getBoard()[first][second + 4] == Board.BoardTileState.E){
-            Piece piece = new Piece("afterimage", p.getColor());
-            piece.getPieceLabel().setSize(40,40);
-            piece.getPieceLabel().setLocation(board.getBoard_location()[first][second + 4]);
-            board.getLayeredPane().add(piece.getPieceLabel());
-            final int f = first;
-            final int s = second;
-            piece.getPieceLabel().addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    p.getPieceLabel().setLocation(board.getBoard_location()[f][s + 4]);
-                    //board.getLayeredPane().remove(piece.getPieceLabel());
-                    for (int i = 0; i < pieceafterimages.size(); i++) {
-                        if (pieceafterimages.get(i).getPieceLabel().getLocation().getX() != 0){
-                            board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
-                        }
-                        pieceafterimages.remove(pieceafterimages.get(i));
-
-                    }
-                    ReplenishVector();
-                    board.getBoard()[f][s+4] = Board.BoardTileState.F;
-                    board.getBoard()[f][s] = Board.BoardTileState.E;
-                    board.getBoard_color()[f][s+4] = piece.getColor();
-                    continueGame();
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
-            afterimageselected = 12;
-            pieceafterimages.add(afterimageselected, piece);
-
+        else{
+            continueGame();
         }
 
 
     }
 
 
-    public void sleep(int num){
-        try{
-            Thread.sleep(num);
+
+    public void removeIfClicked(Piece p){
+        board.getLayeredPane().remove(p.getPieceLabel());
+
+        board.getLayeredPane().repaint();
+    }
+
+    public void removedIfNotClicked(){
+        for (int i = 0; i < pieceafterimages.size(); i++){
+            if (pieceafterimages.get(i).getPieceLabel().getParent() == board.getLayeredPane()){
+                board.getLayeredPane().remove(pieceafterimages.get(i).getPieceLabel());
+            }
         }
-        catch(Exception e){
-            System.out.println(e.getStackTrace());
+        board.getLayeredPane().repaint();
+    }
+
+    public boolean CheckifinTrain(Point pt){
+        for (int i = 0; i < lastPiecesJumped.size(); i++){
+            if(pt.getX() == lastPiecesJumped.get(i).getX() && pt.getY() == lastPiecesJumped.get(i).getY()){
+                return false;
+            }
         }
+        return true;
+
+    }
+
+    public boolean CheckPieceMoved(Piece p, int first, int second){
+        if (board.getBoard_location()[first][second] == null){
+            return false;
+        }
+        else if(lastPieceJumped == null){
+            return false;
+        }
+        else {
+            if (lastPieceJumped.getX() == board.getBoard_location()[first][second].getX() && lastPieceJumped.getY() == board.getBoard_location()[first][second].getY()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
     }
 
     //Rules

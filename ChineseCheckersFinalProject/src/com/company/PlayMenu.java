@@ -30,7 +30,7 @@ public class PlayMenu extends Menu {
     public PlayMenu(JFrame jFrame, Player[] players){
         this.players = players;
         playMenuJFrame = jFrame;
-        gm = new GameManager(players);
+        gm = new GameManager(players, getMenuNavigator(), playMenuJFrame);
         board = gm.getBoard();
         createJFrame();
     }

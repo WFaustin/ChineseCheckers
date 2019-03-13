@@ -32,7 +32,12 @@ public class PlaySetupMenu extends Menu{
     public class PlaySetupMenuButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("OK")){
+            if (e.getActionCommand().equals("Rules") || e.getActionCommand().equals("Rules/About")){
+                getMenuNavigator().MakeMenu(1, playsetupMenuJFrame);
+                playsetupMenuJFrame.remove(playsetuppanel);
+
+            }
+            else if (e.getActionCommand().equals("OK")){
                 int s = (int) nop.getSelectedItem();
                 Player [] players = new Player[s];
 
@@ -44,10 +49,6 @@ public class PlaySetupMenu extends Menu{
                 getMenuNavigator().MakeMenu(3, playsetupMenuJFrame, players);
                 playsetupMenuJFrame.remove(playsetuppanel);
                 //replace 2 with s
-
-
-
-
             }
         }
     }

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ChineseCheckersFinalProject:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ChineseCheckersFinalProject_jar</output-path>
+    <root id="archive" name="ChineseCheckersFinalProject.jar">
+      <element id="module-output" name="ChineseCheckersFinalProject" />
+    </root>
+  </artifact>
+</component>

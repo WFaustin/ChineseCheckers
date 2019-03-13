@@ -56,7 +56,30 @@ public class Board {
         else{
             return northwest_board;
         }
+    }
 
+    public Point[] getNorth_board() {
+        return north_board;
+    }
+
+    public Point[] getNortheast_board() {
+        return northeast_board;
+    }
+
+    public Point[] getNorthwest_board() {
+        return northwest_board;
+    }
+
+    public Point[] getSouth_board() {
+        return south_board;
+    }
+
+    public Point[] getSoutheast_board() {
+        return southeast_board;
+    }
+
+    public Point[] getSouthwest_board() {
+        return southwest_board;
     }
 
     public BoardPanel getBoardPanel(){
@@ -143,8 +166,8 @@ public class Board {
 
 
         //Make the board
-        BoardTileState[][] newboard = new BoardTileState[17][51];
-        board_color = new COLORS[17][51];
+        BoardTileState[][] newboard = new BoardTileState[21][51];
+        board_color = new COLORS[21][51];
         for (int i = 0; i < newboard.length; i++){
             for (int j = 0; j < newboard[i].length; j++){
                 newboard[i][j] = BoardTileState.V;
@@ -152,41 +175,17 @@ public class Board {
             }
         }
 
-        newboard[0][25] = BoardTileState.E;
-        newboard[1][24] = BoardTileState.E;
-        newboard[1][26] = BoardTileState.E;
-        newboard[2][23] = BoardTileState.E;
         newboard[2][25] = BoardTileState.E;
-        newboard[2][27] = BoardTileState.E;
-        newboard[3][22] = BoardTileState.E;
         newboard[3][24] = BoardTileState.E;
         newboard[3][26] = BoardTileState.E;
-        newboard[3][28] = BoardTileState.E;
-        newboard[4][13] = BoardTileState.E;
-        newboard[4][15] = BoardTileState.E;
-        newboard[4][17] = BoardTileState.E;
-        newboard[4][19] = BoardTileState.E;
-        newboard[4][21] = BoardTileState.E;
         newboard[4][23] = BoardTileState.E;
         newboard[4][25] = BoardTileState.E;
         newboard[4][27] = BoardTileState.E;
-        newboard[4][29] = BoardTileState.E;
-        newboard[4][31] = BoardTileState.E;
-        newboard[4][33] = BoardTileState.E;
-        newboard[4][35] = BoardTileState.E;
-        newboard[4][37] = BoardTileState.E;
-        newboard[5][14] = BoardTileState.E;
-        newboard[5][16] = BoardTileState.E;
-        newboard[5][18] = BoardTileState.E;
-        newboard[5][20] = BoardTileState.E;
         newboard[5][22] = BoardTileState.E;
         newboard[5][24] = BoardTileState.E;
         newboard[5][26] = BoardTileState.E;
         newboard[5][28] = BoardTileState.E;
-        newboard[5][30] = BoardTileState.E;
-        newboard[5][32] = BoardTileState.E;
-        newboard[5][34] = BoardTileState.E;
-        newboard[5][36] = BoardTileState.E;
+        newboard[6][13] = BoardTileState.E;
         newboard[6][15] = BoardTileState.E;
         newboard[6][17] = BoardTileState.E;
         newboard[6][19] = BoardTileState.E;
@@ -198,6 +197,8 @@ public class Board {
         newboard[6][31] = BoardTileState.E;
         newboard[6][33] = BoardTileState.E;
         newboard[6][35] = BoardTileState.E;
+        newboard[6][37] = BoardTileState.E;
+        newboard[7][14] = BoardTileState.E;
         newboard[7][16] = BoardTileState.E;
         newboard[7][18] = BoardTileState.E;
         newboard[7][20] = BoardTileState.E;
@@ -208,6 +209,8 @@ public class Board {
         newboard[7][30] = BoardTileState.E;
         newboard[7][32] = BoardTileState.E;
         newboard[7][34] = BoardTileState.E;
+        newboard[7][36] = BoardTileState.E;
+        newboard[8][15] = BoardTileState.E;
         newboard[8][17] = BoardTileState.E;
         newboard[8][19] = BoardTileState.E;
         newboard[8][21] = BoardTileState.E;
@@ -217,6 +220,7 @@ public class Board {
         newboard[8][29] = BoardTileState.E;
         newboard[8][31] = BoardTileState.E;
         newboard[8][33] = BoardTileState.E;
+        newboard[8][35] = BoardTileState.E;
         newboard[9][16] = BoardTileState.E;
         newboard[9][18] = BoardTileState.E;
         newboard[9][20] = BoardTileState.E;
@@ -227,7 +231,6 @@ public class Board {
         newboard[9][30] = BoardTileState.E;
         newboard[9][32] = BoardTileState.E;
         newboard[9][34] = BoardTileState.E;
-        newboard[10][15] = BoardTileState.E;
         newboard[10][17] = BoardTileState.E;
         newboard[10][19] = BoardTileState.E;
         newboard[10][21] = BoardTileState.E;
@@ -237,8 +240,6 @@ public class Board {
         newboard[10][29] = BoardTileState.E;
         newboard[10][31] = BoardTileState.E;
         newboard[10][33] = BoardTileState.E;
-        newboard[10][35] = BoardTileState.E;
-        newboard[11][14] = BoardTileState.E;
         newboard[11][16] = BoardTileState.E;
         newboard[11][18] = BoardTileState.E;
         newboard[11][20] = BoardTileState.E;
@@ -249,8 +250,6 @@ public class Board {
         newboard[11][30] = BoardTileState.E;
         newboard[11][32] = BoardTileState.E;
         newboard[11][34] = BoardTileState.E;
-        newboard[11][36] = BoardTileState.E;
-        newboard[12][13] = BoardTileState.E;
         newboard[12][15] = BoardTileState.E;
         newboard[12][17] = BoardTileState.E;
         newboard[12][19] = BoardTileState.E;
@@ -262,146 +261,170 @@ public class Board {
         newboard[12][31] = BoardTileState.E;
         newboard[12][33] = BoardTileState.E;
         newboard[12][35] = BoardTileState.E;
-        newboard[12][37] = BoardTileState.E;
+        newboard[13][14] = BoardTileState.E;
+        newboard[13][16] = BoardTileState.E;
+        newboard[13][18] = BoardTileState.E;
+        newboard[13][20] = BoardTileState.E;
         newboard[13][22] = BoardTileState.E;
         newboard[13][24] = BoardTileState.E;
         newboard[13][26] = BoardTileState.E;
         newboard[13][28] = BoardTileState.E;
+        newboard[13][30] = BoardTileState.E;
+        newboard[13][32] = BoardTileState.E;
+        newboard[13][34] = BoardTileState.E;
+        newboard[13][36] = BoardTileState.E;
+        newboard[14][13] = BoardTileState.E;
+        newboard[14][15] = BoardTileState.E;
+        newboard[14][17] = BoardTileState.E;
+        newboard[14][19] = BoardTileState.E;
+        newboard[14][21] = BoardTileState.E;
         newboard[14][23] = BoardTileState.E;
         newboard[14][25] = BoardTileState.E;
         newboard[14][27] = BoardTileState.E;
+        newboard[14][29] = BoardTileState.E;
+        newboard[14][31] = BoardTileState.E;
+        newboard[14][33] = BoardTileState.E;
+        newboard[14][35] = BoardTileState.E;
+        newboard[14][37] = BoardTileState.E;
+        newboard[15][22] = BoardTileState.E;
         newboard[15][24] = BoardTileState.E;
         newboard[15][26] = BoardTileState.E;
+        newboard[15][28] = BoardTileState.E;
+        newboard[16][23] = BoardTileState.E;
         newboard[16][25] = BoardTileState.E;
+        newboard[16][27] = BoardTileState.E;
+        newboard[17][24] = BoardTileState.E;
+        newboard[17][26] = BoardTileState.E;
+        newboard[18][25] = BoardTileState.E;
 
         board = newboard;
 
 
         //Create a board layout for specific coordinate positions that need to be place
-        Point [][] pointboard = new Point[17][51];
+        Point [][] pointboard = new Point[21][51];
 
 
-        pointboard[0][25] = new Point(278, 27);
-        pointboard[1][24] = new Point(260, 56);
-        pointboard[1][26] = new Point(295, 56);
-        pointboard[2][23] = new Point(244, 85);
-        pointboard[2][25] = new Point(278, 85);
-        pointboard[2][27] = new Point(311, 85);
-        pointboard[3][22] = new Point(225, 114);
-        pointboard[3][24] = new Point(260, 114);
-        pointboard[3][26] = new Point(295, 114);
-        pointboard[3][28] = new Point(330, 114);
-        pointboard[4][13] = new Point(76, 143);
-        pointboard[4][15] = new Point(111, 143);
-        pointboard[4][17] = new Point(142, 143);
-        pointboard[4][19] = new Point(175, 143);
-        pointboard[4][21] = new Point(208, 143);
-        pointboard[4][23] = new Point(244, 143);
-        pointboard[4][25] = new Point(277, 143);
-        pointboard[4][27] = new Point(312, 143);
-        pointboard[4][29] = new Point(346, 143);
-        pointboard[4][31] = new Point(381, 143);
-        pointboard[4][33] = new Point(416, 143);
-        pointboard[4][35] = new Point(449, 143);
-        pointboard[4][37] = new Point(484, 143);
-        pointboard[5][14] = new Point(87, 171);
-        pointboard[5][16] = new Point(120, 171);
-        pointboard[5][18] = new Point(155, 171);
-        pointboard[5][20] = new Point(190, 171);
-        pointboard[5][22] = new Point(225, 171);
-        pointboard[5][24] = new Point(260, 171);
-        pointboard[5][26] = new Point(295, 171);
-        pointboard[5][28] = new Point(330, 171);
-        pointboard[5][30] = new Point(365, 171);
-        pointboard[5][32] = new Point(400, 171);
-        pointboard[5][34] = new Point(435, 171);
-        pointboard[5][36] = new Point(470, 171);
-        pointboard[6][15] = new Point(111, 200);
-        pointboard[6][17] = new Point(142, 200);
-        pointboard[6][19] = new Point(175, 200);
-        pointboard[6][21] = new Point(208, 200);
-        pointboard[6][23] = new Point(244, 200);
-        pointboard[6][25] = new Point(279, 200);
-        pointboard[6][27] = new Point(312, 200);
-        pointboard[6][29] = new Point(348, 200);
-        pointboard[6][31] = new Point(383, 200);
-        pointboard[6][33] = new Point(415, 200);
-        pointboard[6][35] = new Point(449, 200);
-        pointboard[7][16] = new Point(120, 229);
-        pointboard[7][18] = new Point(155, 229);
-        pointboard[7][20] = new Point(190, 229);
-        pointboard[7][22] = new Point(225, 229);
-        pointboard[7][24] = new Point(260, 229);
-        pointboard[7][26] = new Point(295, 229);
-        pointboard[7][28] = new Point(330, 229);
-        pointboard[7][30] = new Point(365, 229);
-        pointboard[7][32] = new Point(400, 229);
-        pointboard[7][34] = new Point(435, 229);
-        pointboard[8][17] = new Point(144, 258);
-        pointboard[8][19] = new Point(175, 258);
-        pointboard[8][21] = new Point(208, 258);
-        pointboard[8][23] = new Point(244, 258);
-        pointboard[8][25] = new Point(279, 258);
-        pointboard[8][27] = new Point(312, 258);
-        pointboard[8][29] = new Point(348, 258);
-        pointboard[8][31] = new Point(383, 258);
-        pointboard[8][33] = new Point(415, 258);
-        pointboard[9][16] = new Point(120, 287);
-        pointboard[9][18] = new Point(155, 287);
-        pointboard[9][20] = new Point(190, 287);
-        pointboard[9][22] = new Point(225, 287);
-        pointboard[9][24] = new Point(260, 287);
-        pointboard[9][26] = new Point(295, 287);
-        pointboard[9][28] = new Point(330, 287);
-        pointboard[9][30] = new Point(365, 287);
-        pointboard[9][32] = new Point(400, 287);
-        pointboard[9][34] = new Point(435, 287);
-        pointboard[10][15] = new Point(111, 313);
-        pointboard[10][17] = new Point(142, 313);
-        pointboard[10][19] = new Point(175, 313);
-        pointboard[10][21] = new Point(208, 313);
-        pointboard[10][23] = new Point(244, 313);
-        pointboard[10][25] = new Point(277, 313);
-        pointboard[10][27] = new Point(312, 313);
-        pointboard[10][29] = new Point(346, 313);
-        pointboard[10][31] = new Point(381, 313);
-        pointboard[10][33] = new Point(416, 313);
-        pointboard[10][35] = new Point(449, 313);
-        pointboard[11][14] = new Point(87, 343);
-        pointboard[11][16] = new Point(120, 343);
-        pointboard[11][18] = new Point(155, 343);
-        pointboard[11][20] = new Point(190, 343);
-        pointboard[11][22] = new Point(225, 343);
-        pointboard[11][24] = new Point(260, 343);
-        pointboard[11][26] = new Point(295, 343);
-        pointboard[11][28] = new Point(330, 343);
-        pointboard[11][30] = new Point(365, 343);
-        pointboard[11][32] = new Point(400, 343);
-        pointboard[11][34] = new Point(435, 343);
-        pointboard[11][36] = new Point(470, 343);
-        pointboard[12][13] = new Point(76, 370);
-        pointboard[12][15] = new Point(111, 370);
-        pointboard[12][17] = new Point(142, 370);
-        pointboard[12][19] = new Point(176, 370);
-        pointboard[12][21] = new Point(210, 370);
-        pointboard[12][23] = new Point(245, 370);
-        pointboard[12][25] = new Point(279, 370);
-        pointboard[12][27] = new Point(313, 370);
-        pointboard[12][29] = new Point(348, 370);
-        pointboard[12][31] = new Point(383, 370);
-        pointboard[12][33] = new Point(416, 370);
-        pointboard[12][35] = new Point(450, 370);
-        pointboard[12][37] = new Point(485, 370);
-        pointboard[13][22] = new Point(225, 400);
-        pointboard[13][24] = new Point(260, 400);
-        pointboard[13][26] = new Point(295, 400);
-        pointboard[13][28] = new Point(330, 400);
-        pointboard[14][23] = new Point(244, 427);
-        pointboard[14][25] = new Point(278, 427);
-        pointboard[14][27] = new Point(311, 427);
-        pointboard[15][24] = new Point(260, 458);
-        pointboard[15][26] = new Point(295, 458);
-        pointboard[16][25] = new Point(278, 484);
+        pointboard[2][25] = new Point(278, 27);
+        pointboard[3][24] = new Point(260, 56);
+        pointboard[3][26] = new Point(295, 56);
+        pointboard[4][23] = new Point(244, 85);
+        pointboard[4][25] = new Point(278, 85);
+        pointboard[4][27] = new Point(311, 85);
+        pointboard[5][22] = new Point(225, 114);
+        pointboard[5][24] = new Point(260, 114);
+        pointboard[5][26] = new Point(295, 114);
+        pointboard[5][28] = new Point(330, 114);
+        pointboard[6][13] = new Point(76, 143);
+        pointboard[6][15] = new Point(111, 143);
+        pointboard[6][17] = new Point(142, 143);
+        pointboard[6][19] = new Point(175, 143);
+        pointboard[6][21] = new Point(208, 143);
+        pointboard[6][23] = new Point(244, 143);
+        pointboard[6][25] = new Point(277, 143);
+        pointboard[6][27] = new Point(312, 143);
+        pointboard[6][29] = new Point(346, 143);
+        pointboard[6][31] = new Point(381, 143);
+        pointboard[6][33] = new Point(416, 143);
+        pointboard[6][35] = new Point(449, 143);
+        pointboard[6][37] = new Point(484, 143);
+        pointboard[7][14] = new Point(91, 171);
+        pointboard[7][16] = new Point(124, 171);
+        pointboard[7][18] = new Point(158, 171);
+        pointboard[7][20] = new Point(192, 171);
+        pointboard[7][22] = new Point(225, 171);
+        pointboard[7][24] = new Point(260, 171);
+        pointboard[7][26] = new Point(295, 171);
+        pointboard[7][28] = new Point(330, 171);
+        pointboard[7][30] = new Point(365, 171);
+        pointboard[7][32] = new Point(400, 171);
+        pointboard[7][34] = new Point(435, 171);
+        pointboard[7][36] = new Point(470, 171);
+        pointboard[8][15] = new Point(111, 200);
+        pointboard[8][17] = new Point(144, 200);
+        pointboard[8][19] = new Point(175, 200);
+        pointboard[8][21] = new Point(210, 200);
+        pointboard[8][23] = new Point(244, 200);
+        pointboard[8][25] = new Point(279, 200);
+        pointboard[8][27] = new Point(312, 200);
+        pointboard[8][29] = new Point(348, 200);
+        pointboard[8][31] = new Point(383, 200);
+        pointboard[8][33] = new Point(415, 200);
+        pointboard[8][35] = new Point(449, 200);
+        pointboard[9][16] = new Point(127, 229);
+        pointboard[9][18] = new Point(159, 229);
+        pointboard[9][20] = new Point(193, 229);
+        pointboard[9][22] = new Point(225, 229);
+        pointboard[9][24] = new Point(260, 229);
+        pointboard[9][26] = new Point(295, 229);
+        pointboard[9][28] = new Point(330, 229);
+        pointboard[9][30] = new Point(365, 229);
+        pointboard[9][32] = new Point(400, 229);
+        pointboard[9][34] = new Point(435, 229);
+        pointboard[10][17] = new Point(144, 258);
+        pointboard[10][19] = new Point(175, 258);
+        pointboard[10][21] = new Point(208, 258);
+        pointboard[10][23] = new Point(244, 258);
+        pointboard[10][25] = new Point(279, 258);
+        pointboard[10][27] = new Point(312, 258);
+        pointboard[10][29] = new Point(348, 258);
+        pointboard[10][31] = new Point(383, 258);
+        pointboard[10][33] = new Point(415, 258);
+        pointboard[11][16] = new Point(120, 287);
+        pointboard[11][18] = new Point(155, 287);
+        pointboard[11][20] = new Point(190, 287);
+        pointboard[11][22] = new Point(225, 287);
+        pointboard[11][24] = new Point(260, 287);
+        pointboard[11][26] = new Point(295, 287);
+        pointboard[11][28] = new Point(330, 287);
+        pointboard[11][30] = new Point(365, 287);
+        pointboard[11][32] = new Point(400, 287);
+        pointboard[11][34] = new Point(435, 287);
+        pointboard[12][15] = new Point(111, 313);
+        pointboard[12][17] = new Point(142, 313);
+        pointboard[12][19] = new Point(175, 313);
+        pointboard[12][21] = new Point(208, 313);
+        pointboard[12][23] = new Point(244, 313);
+        pointboard[12][25] = new Point(277, 313);
+        pointboard[12][27] = new Point(312, 313);
+        pointboard[12][29] = new Point(346, 313);
+        pointboard[12][31] = new Point(381, 313);
+        pointboard[12][33] = new Point(416, 313);
+        pointboard[12][35] = new Point(449, 313);
+        pointboard[13][14] = new Point(87, 343);
+        pointboard[13][16] = new Point(120, 343);
+        pointboard[13][18] = new Point(155, 343);
+        pointboard[13][20] = new Point(190, 343);
+        pointboard[13][22] = new Point(225, 343);
+        pointboard[13][24] = new Point(260, 343);
+        pointboard[13][26] = new Point(295, 343);
+        pointboard[13][28] = new Point(330, 343);
+        pointboard[13][30] = new Point(365, 343);
+        pointboard[13][32] = new Point(400, 343);
+        pointboard[13][34] = new Point(435, 343);
+        pointboard[13][36] = new Point(470, 343);
+        pointboard[14][13] = new Point(76, 370);
+        pointboard[14][15] = new Point(111, 370);
+        pointboard[14][17] = new Point(142, 370);
+        pointboard[14][19] = new Point(176, 370);
+        pointboard[14][21] = new Point(210, 370);
+        pointboard[14][23] = new Point(245, 370);
+        pointboard[14][25] = new Point(279, 370);
+        pointboard[14][27] = new Point(313, 370);
+        pointboard[14][29] = new Point(348, 370);
+        pointboard[14][31] = new Point(383, 370);
+        pointboard[14][33] = new Point(416, 370);
+        pointboard[14][35] = new Point(450, 370);
+        pointboard[14][37] = new Point(485, 370);
+        pointboard[15][22] = new Point(225, 400);
+        pointboard[15][24] = new Point(260, 400);
+        pointboard[15][26] = new Point(295, 400);
+        pointboard[15][28] = new Point(330, 400);
+        pointboard[16][23] = new Point(244, 427);
+        pointboard[16][25] = new Point(278, 427);
+        pointboard[16][27] = new Point(311, 427);
+        pointboard[17][24] = new Point(260, 458);
+        pointboard[17][26] = new Point(295, 458);
+        pointboard[18][25] = new Point(278, 484);
 
         board_location = pointboard;
 
@@ -428,76 +451,76 @@ public class Board {
     public void setRegions(){
         //North - set
         north_board = new Point[10];
-        north_board[0] = new Point(0,25);
-        north_board[1] = new Point(1,24);
-        north_board[2] = new Point(1,26);
-        north_board[3] = new Point(2,23);
-        north_board[4] = new Point(2,25);
-        north_board[5] = new Point(2,27);
-        north_board[6] = new Point(3,22);
-        north_board[7] = new Point(3,24);
-        north_board[8] = new Point(3,26);
-        north_board[9] = new Point(3,28);
+        north_board[0] = new Point(2,25);
+        north_board[1] = new Point(3,24);
+        north_board[2] = new Point(3,26);
+        north_board[3] = new Point(4,23);
+        north_board[4] = new Point(4,25);
+        north_board[5] = new Point(4,27);
+        north_board[6] = new Point(5,22);
+        north_board[7] = new Point(5,24);
+        north_board[8] = new Point(5,26);
+        north_board[9] = new Point(5,28);
 
         northwest_board = new Point[10];
-        northwest_board[0] = new Point(4,13);
-        northwest_board[1] = new Point(4,15);
-        northwest_board[2] = new Point(4,17);
-        northwest_board[3] = new Point(4,19);
-        northwest_board[4] = new Point(5,14);
-        northwest_board[5] = new Point(5,16);
-        northwest_board[6] = new Point(5,18);
-        northwest_board[7] = new Point(6,15);
-        northwest_board[8] = new Point(6,17);
-        northwest_board[9] = new Point(7,16);
+        northwest_board[0] = new Point(6,13);
+        northwest_board[1] = new Point(6,15);
+        northwest_board[2] = new Point(6,17);
+        northwest_board[3] = new Point(6,19);
+        northwest_board[4] = new Point(7,14);
+        northwest_board[5] = new Point(7,16);
+        northwest_board[6] = new Point(7,18);
+        northwest_board[7] = new Point(8,15);
+        northwest_board[8] = new Point(8,17);
+        northwest_board[9] = new Point(9,16);
 
         northeast_board = new Point[10];
-        northeast_board[0] = new Point(4,37);
-        northeast_board[1] = new Point(4,35);
-        northeast_board[2] = new Point(4,33);
-        northeast_board[3] = new Point(4,31);
-        northeast_board[4] = new Point(5,36);
-        northeast_board[5] = new Point(5,34);
-        northeast_board[6] = new Point(5,32);
-        northeast_board[7] = new Point(6,35);
-        northeast_board[8] = new Point(6,33);
-        northeast_board[9] = new Point(7,34);
+        northeast_board[0] = new Point(6,37);
+        northeast_board[1] = new Point(6,35);
+        northeast_board[2] = new Point(6,33);
+        northeast_board[3] = new Point(6,31);
+        northeast_board[4] = new Point(7,36);
+        northeast_board[5] = new Point(7,34);
+        northeast_board[6] = new Point(7,32);
+        northeast_board[7] = new Point(8,35);
+        northeast_board[8] = new Point(8,33);
+        northeast_board[9] = new Point(9,34);
 
         southeast_board = new Point[10];
-        southeast_board[0] = new Point(12,37);
-        southeast_board[1] = new Point(12,35);
-        southeast_board[2] = new Point(12,33);
-        southeast_board[3] = new Point(12,31);
-        southeast_board[4] = new Point(11,36);
-        southeast_board[5] = new Point(11,34);
-        southeast_board[6] = new Point(11,32);
-        southeast_board[7] = new Point(10,35);
-        southeast_board[8] = new Point(10,33);
-        southeast_board[9] = new Point(9,34);
+        southeast_board[0] = new Point(14,37);
+        southeast_board[1] = new Point(14,35);
+        southeast_board[2] = new Point(14,33);
+        southeast_board[3] = new Point(14,31);
+        southeast_board[4] = new Point(13,36);
+        southeast_board[5] = new Point(13,34);
+        southeast_board[6] = new Point(13,32);
+        southeast_board[7] = new Point(12,35);
+        southeast_board[8] = new Point(12,33);
+        southeast_board[9] = new Point(11,34);
 
         southwest_board = new Point[10];
-        southwest_board[0] = new Point(12,13);
-        southwest_board[1] = new Point(12,15);
-        southwest_board[2] = new Point(12,17);
-        southwest_board[3] = new Point(12,19);
-        southwest_board[4] = new Point(11,14);
-        southwest_board[5] = new Point(11,16);
-        southwest_board[6] = new Point(11,18);
-        southwest_board[7] = new Point(10,15);
-        southwest_board[8] = new Point(10,17);
-        southwest_board[9] = new Point(9,16);
+        southwest_board[0] = new Point(14,13);
+        southwest_board[1] = new Point(14,15);
+        southwest_board[2] = new Point(14,17);
+        southwest_board[3] = new Point(14,19);
+        southwest_board[4] = new Point(13,14);
+        southwest_board[5] = new Point(13,16);
+        southwest_board[6] = new Point(13,18);
+        southwest_board[7] = new Point(12,15);
+        southwest_board[8] = new Point(12,17);
+        southwest_board[9] = new Point(11,16);
 
         south_board = new Point[10];
-        south_board[0] = new Point(16,25);
-        south_board[1] = new Point(15,24);
-        south_board[2] = new Point(15,26);
-        south_board[3] = new Point(14,23);
-        south_board[4] = new Point(14,25);
-        south_board[5] = new Point(14,27);
-        south_board[6] = new Point(13,22);
-        south_board[7] = new Point(13,24);
-        south_board[8] = new Point(13,26);
-        south_board[9] = new Point(13,28);
+        south_board[0] = new Point(18,25);
+        south_board[1] = new Point(17,24);
+        south_board[2] = new Point(17,26);
+        south_board[3] = new Point(16,23);
+        south_board[4] = new Point(16,25);
+        south_board[5] = new Point(16,27);
+        south_board[6] = new Point(15,22);
+        south_board[7] = new Point(15,24);
+        south_board[8] = new Point(15,26);
+        south_board[9] = new Point(15,28);
     }
 
 

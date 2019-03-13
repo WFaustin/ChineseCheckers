@@ -1,6 +1,8 @@
 package com.company;
 
 
+import java.awt.*;
+
 enum COLORS{
     Red, Blue, Green, Yellow, White, Orange, Black, Empty;
 }
@@ -12,6 +14,7 @@ public class Player {
     private String name;
     private COLORS color;
     private Piece [] pieces = null;
+    public Point[] winRegions = null;
 
 
     public Player(){
