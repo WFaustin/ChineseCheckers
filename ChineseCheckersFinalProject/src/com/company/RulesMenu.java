@@ -43,11 +43,12 @@ public class RulesMenu extends Menu {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(new RulesMenuButtonListener());
 
-        JLabel rulesText = new JLabel("These are the rules of chinese checkers");
+        JLabel rulesText = new JLabel("Visit the following link to get rules and learn about implementation details! https://github.com/WFaustin/ChineseCheckers/blob/master/CS338README.txt");
+        JOptionPane.showConfirmDialog(rulesMenuJFrame, "Visit the following link to get rules and learn about implementation details! https://github.com/WFaustin/ChineseCheckers/blob/master/CS338README.txt" );
         jPanel2.add(backButton);
 
 
-        jPanel.add(rulesText);
+        //jPanel.add(rulesText);
 
 
 
